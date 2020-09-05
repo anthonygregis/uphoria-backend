@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const {gql} = require("apollo-server")
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -15,13 +15,13 @@ const typeDefs = gql`
         followingUsers: [ID!]!
         videos: [Video!]!
     }
-    
+
     type Profile {
         bio: String!
         instagramUrl: String!
         personalUrl: String!
     }
-    
+
     type Video {
         id: ID!
         description: String!
@@ -30,15 +30,16 @@ const typeDefs = gql`
         likes: [ID!]!
         shares: Int!
     }
-    
+
     type AuthPayload {
         token: String
         user: User
     }
-    
+
     type Query {
+        user(id: ID!): User!
     }
-    
+
     type Mutation {
         signup(username: String!, CID: ID!, firstName: String!, lastName: String!, gender: String!, phone: String!, password: String!, permissionLevel: Int!, age: Int!): AuthPayload
         login(username: String!, password: String!): AuthPayload
