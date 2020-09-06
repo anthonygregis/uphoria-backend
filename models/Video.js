@@ -1,6 +1,10 @@
 const mongoose = require("mongoose")
 
 const VideoSchema = new mongoose.Schema({
+	videoUrl: {
+		type: String,
+		require: true
+	},
   description: {
     type: String,
     default: ""
@@ -15,7 +19,8 @@ const VideoSchema = new mongoose.Schema({
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectID,
-    ref: "User"
+    ref: "User",
+	  default: []
   }]
 }, { timestamps: true })
 
