@@ -28,9 +28,9 @@ const typeDefs = gql`
 
   type Video {
     id: ID!
+	  videoUrl: String!
     description: String!
-    audioId: ID!
-    user: ID!
+    userId: ID!
     likes: [ID!]!
     shares: Int!
 	  createdAt: Date!
@@ -52,6 +52,8 @@ const typeDefs = gql`
   type Query {
     user(id: ID!): User!
 	  users: [User!]!
+	  video(id: ID!): Video!
+	  videos: [Video!]!
   }
   
 
@@ -60,6 +62,10 @@ const typeDefs = gql`
     login(email: String!, password: String!): AuthPayload
 	  updateUser(id: ID!, username: String, email: String, name: String, birthday: Date, profile: userProfile): User!
 	  deleteUser(id: ID!): Boolean!
+	  createVideo(description: String!, userId: ID!, videoUrl: String!): Video!
+	  updateVideo(id: ID!, description: String, likeId: ID, share: Int): Video!
+	  deleteVideo(id: ID!): Boolean!
+	  deleteVideos: Boolean!
   }
 `
 
