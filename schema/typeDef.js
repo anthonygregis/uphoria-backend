@@ -3,47 +3,64 @@ const {gql} = require("apollo-server")
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
-const typeDefs = gql`
-    type User {
-        id: ID!
-        username: String!
-        email: Int!
-        password: String!
-        name: String!
-        birthday: String!
-        profile: Profile!
-        followingUsers: [ID!]!
-        videos: [Video!]!
-    }
+const typeDefs = gql`    
+  # Custom Scalars
+  scalar Date
 
-    type Profile {
-        bio: String!
-        instagramUrl: String!
-        personalUrl: String!
-    }
+  # Output Type Definitions
+  type User {
+    id: ID!
+    username: String!
+    email: String!
+    password: String!
+    name: String!
+    birthday: Date!
+    profile: Profile!
+    followingUsers: [ID!]!
+    videos: [Video!]!
+  }
 
-    type Video {
-        id: ID!
-        description: String!
-        audioId: ID!
-        user: ID!
-        likes: [ID!]!
-        shares: Int!
-    }
+  type Profile {
+    bio: String!
+    instagramUrl: String!
+    personalUrl: String!
+  }
 
-    type AuthPayload {
-        token: String
-        user: User
-    }
+  type Video {
+    id: ID!
+    description: String!
+    audioId: ID!
+    user: ID!
+    likes: [ID!]!
+    shares: Int!
+	  createdAt: Date!
+  }
 
-    type Query {
-        user(id: ID!): User!
-    }
+  type AuthPayload {
+    token: String
+    user: User
+  }
+  
+  # Input Type Definitions
+  input userProfile {
+      bio: String!
+      instagramUrl: String!
+      personalUrl: String!
+  }
+  
+  # Root Definitions (CRUD)
+  type Query {
+    user(id: ID!): User!
+	  users: [User!]!
+  }
+  
 
-    type Mutation {
-        signup(username: String!, CID: ID!, firstName: String!, lastName: String!, gender: String!, phone: String!, password: String!, permissionLevel: Int!, age: Int!): AuthPayload
-        login(username: String!, password: String!): AuthPayload
-    }
+  type Mutation {
+    signup(username: String!, email: String!, password: String!, name: String!, birthday: Date!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+	  updateUser(id: ID!, username: String, email: String, name: String, birthday: Date, profile: userProfile): User!
+	  deleteUser(id: ID!): Boolean!
+  }
 `
 
 // id: ID!

@@ -17,6 +17,6 @@ const VideoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectID,
     ref: "User"
   }]
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("Video", VideoSchema)

@@ -7,6 +7,10 @@ const UserSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 30
   },
+	name: {
+  	type: String,
+		required: true
+	},
   email: {
     type: String,
     required: true,
@@ -44,6 +48,6 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectID,
     ref: "Video"
   }]
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("User", UserSchema)
