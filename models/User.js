@@ -4,6 +4,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
     minlength: 5,
     maxlength: 30
   },
@@ -37,11 +38,11 @@ const UserSchema = new mongoose.Schema({
     },
     instagramUrl: {
       type: String,
-      default: ""
+      default: "https://instagram.com/anthonygregis"
     },
     personalUrl: {
       type: String,
-      default: ""
+      default: "https://nopixel.online/"
     }
   },
   videos: [{

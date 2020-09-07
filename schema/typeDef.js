@@ -43,9 +43,9 @@ const typeDefs = gql`
   
   # Input Type Definitions
   input userProfile {
-      bio: String!
-      instagramUrl: String!
-      personalUrl: String!
+      bio: String
+      instagramUrl: String
+      personalUrl: String
   }
   
   # Root Definitions (CRUD)

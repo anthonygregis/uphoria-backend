@@ -2,6 +2,7 @@ require("dotenv").config()
 const db = require("../models")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const APP_SECRET = process.env.APP_SECRET
 
 const resolver = {
 	Query: {
@@ -61,8 +62,10 @@ const resolver = {
 
 				const user = loginUser
 
+				console.log(user)
+
 				return {
-					token: jwt.sign({...user}, APP_SECRET),
+					token: jwt.sign(user.toObject(), APP_SECRET),
 					user,
 				}
 			}
