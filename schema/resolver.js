@@ -8,14 +8,28 @@ const resolver = {
 	Query: {
 		user: {
 			description: "Returns a user based off their ID",
-			resolve: async (_, {id}, context) => {
-				return await db.User.findById(id)
+			resolve: async (_, {id, ...args}, context) => {
+				if(!args.privilegedSecret) { args.privilegedSecret = "" }
+				const foundUser = await db.User.findById(id)
+				if(args.privilegedSecret !== "antiTikTok") {
+					foundUser.email = "Not Authorized"
+					foundUser.birthday = "Not Authorized"
+				}
+				return foundUser
 			}
 		},
 		users: {
 			description: "Returns all users",
 			resolve: async () => {
-				return await db.User.find()
+				if(!args.privilegedSecret) { args.privilegedSecret = "" }
+				const foundUsers = await db.User.find()
+				if(args.privilegedSecret !== "antiTikTok") {
+					for(let i = 0; i < foundUsers.length; i++) {
+						foundUsers[i].email = "Not Authorized"
+						foundUsers[i].birthday = "Not Authorized"
+					}
+				}
+				return foundUsers
 			}
 		},
 		video: {
@@ -60,12 +74,12 @@ const resolver = {
 					throw new Error("Invalid password")
 				}
 
-				const user = loginUser
+				const user = loginUser.toObject()
 
 				console.log(user)
 
 				return {
-					token: jwt.sign(user.toObject(), APP_SECRET),
+					token: jwt.sign(user, APP_SECRET),
 					user,
 				}
 			}
@@ -73,6 +87,8 @@ const resolver = {
 		updateUser: {
 			description: "Update a user",
 			resolve: async (_, args, context) => {
+				if (!context.user) throw new Error("Protected Route, please login")
+				if (context.user.id !== args.id) throw new Error("You are not authorized to update another user")
 				const {id, ...setArgs} = args
 				return await db.User.findByIdAndUpdate({_id: id}, {$set: {...setArgs}}, {"new": true})
 			}
@@ -80,6 +96,8 @@ const resolver = {
 		deleteUser: {
 			description: "We aren't Tik Tok",
 			resolve: async (_, {id}, context) => {
+				if (!context.user) throw new Error("Protected Route, please login")
+				if (context.user.id !== args.id) throw new Error("You are not authorized to delete another user")
 				await new Promise((resolve, reject) => {
 					db.User.findByIdAndDelete(id, (err, docs) => {
 						if (err) reject(err)
@@ -87,7 +105,7 @@ const resolver = {
 					})
 				})
 				return new Promise((resolve, reject) => {
-					db.Video.deleteMany({ userId: id }, (err, docs) => {
+					db.Video.deleteMany({userId: id}, (err, docs) => {
 						if (err) reject(err)
 						else resolve(true)
 					})
@@ -97,21 +115,28 @@ const resolver = {
 		createVideo: {
 			description: "Create a uphoria video",
 			resolve: async (_, {description, userId, videoUrl}, context) => {
+				if (!context.user) throw new Error("Protected Route, please login")
 				return await db.Video.create({description, userId, videoUrl})
 			}
 		},
 		updateVideo: {
 			description: "Update a uphoria video",
 			resolve: async (_, {id, likeId, share, ...setArgs}, context) => {
-				let updateField = { $set: {...setArgs} }
-				if(likeId) { updateField.$push = { likes: likeId } }
-				if(share) { updateField.$inc = { shares: share } }
+				if (!context.user) throw new Error("Protected Route, please login")
+				let updateField = {$set: {...setArgs}}
+				if (likeId) {
+					updateField.$push = {likes: likeId}
+				}
+				if (share) {
+					updateField.$inc = {shares: share}
+				}
 				return await db.Video.findByIdAndUpdate({_id: id}, {...updateField}, {"new": true})
 			}
 		},
 		deleteVideo: {
 			description: "Delete your trash video",
 			resolve: async (_, {id}, context) => {
+				if (!context.user) throw new Error("Protected Route, please login")
 				return new Promise((resolve, reject) => {
 					const deletedUser = db.Video.findByIdAndDelete(id, (err, docs) => {
 						if (err) reject(err)
@@ -123,6 +148,8 @@ const resolver = {
 		deleteVideos: {
 			description: "TikTok Found Us",
 			resolve: async (_, args, context) => {
+				if (!context.user) throw new Error("Protected Route, please login")
+				if (context.user.permissionLevel === 1) throw new Error("You are not authorized to hide us from Tik Tok")
 				return new Promise((resolve, reject) => {
 					db.Video.remove({}, (err, docs) => {
 						if (err) reject(err)

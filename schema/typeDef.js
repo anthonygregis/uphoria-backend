@@ -11,10 +11,10 @@ const typeDefs = gql`
   type User {
     id: ID!
     username: String!
-    email: String!
+    email: String
     password: String!
     name: String!
-    birthday: Date!
+    birthday: Date
     profile: Profile!
     followingUsers: [ID!]!
     videos: [Video!]!
@@ -50,8 +50,8 @@ const typeDefs = gql`
   
   # Root Definitions (CRUD)
   type Query {
-    user(id: ID!): User!
-	  users: [User!]!
+    user(id: ID!, privilegedSecret: String): User!
+	  users(privilegedSecret: String): [User!]!
 	  video(id: ID!): Video!
 	  videos: [Video!]!
   }
