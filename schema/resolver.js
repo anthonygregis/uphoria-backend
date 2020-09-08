@@ -9,9 +9,11 @@ const resolver = {
 		user: {
 			description: "Returns a user based off their ID",
 			resolve: async (_, {id, ...args}, context) => {
-				if(!args.privilegedSecret) { args.privilegedSecret = "" }
-				const foundUser = await db.User.findById(id)
-				if(args.privilegedSecret !== "antiTikTok") {
+				if (!args.privilegedSecret) {
+					args.privilegedSecret = ""
+				}
+				const foundUser = await db.User.findById(id).populate("videos")
+				if (args.privilegedSecret !== "antiTikTok") {
 					foundUser.email = "Not Authorized"
 					foundUser.birthday = "Not Authorized"
 				}
@@ -20,14 +22,20 @@ const resolver = {
 		},
 		users: {
 			description: "Returns all users",
-			resolve: async () => {
-				if(!args.privilegedSecret) { args.privilegedSecret = "" }
-				const foundUsers = await db.User.find()
-				if(args.privilegedSecret !== "antiTikTok") {
-					for(let i = 0; i < foundUsers.length; i++) {
+			resolve: async (_, args, context) => {
+				const cleanUser = () => {
+					for (let i = 0; i < foundUsers.length; i++) {
 						foundUsers[i].email = "Not Authorized"
-						foundUsers[i].birthday = "Not Authorized"
+						foundUsers[i].birthday = "1800-01-01T00:00:00.000Z"
 					}
+				}
+
+				if (!args.privilegedSecret) {
+					args.privilegedSecret = ""
+				}
+				const foundUsers = await db.User.find().populate("videos")
+				if (args.privilegedSecret !== "antiTikTok") {
+					await cleanUser()
 				}
 				return foundUsers
 			}
@@ -116,7 +124,11 @@ const resolver = {
 			description: "Create a uphoria video",
 			resolve: async (_, {description, userId, videoUrl}, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
-				return await db.Video.create({description, userId, videoUrl})
+				const newVideo = await db.Video.create({description, userId, videoUrl})
+				console.log(newVideo)
+				const updatedUser = await db.User.findByIdAndUpdate({_id: userId}, {$push: {videos: newVideo._id}}, {"new": true})
+				console.log(updatedUser)
+				return newVideo
 			}
 		},
 		updateVideo: {
