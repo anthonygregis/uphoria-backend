@@ -53,7 +53,9 @@ const resolver = {
 				if (!args.privilegedSecret) {
 					args.privilegedSecret = ""
 				}
-				const foundUser = await db.User.findById(id).populate("videos", { sort: {'createdAt': -1 }})
+				const foundUser = await db.User.findById(id).populate({ path: "videos", options: { sort: { 'createdAt': -1 } } })
+
+				console.log(foundUser)
 				if (args.privilegedSecret !== "antiTikTok") {
 					foundUser.email = "Not Authorized"
 					foundUser.birthday = "Not Authorized"
@@ -74,7 +76,8 @@ const resolver = {
 				if (!args.privilegedSecret) {
 					args.privilegedSecret = ""
 				}
-				const foundUsers = await db.User.find().populate("videos", { sort: {'createdAt': -1 }})
+				const foundUsers = await db.User.find().populate({ path: "videos", options: { sort: { 'createdAt': -1 } } })
+
 				if (args.privilegedSecret !== "antiTikTok") {
 					await cleanUser()
 				}
