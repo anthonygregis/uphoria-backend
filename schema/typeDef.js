@@ -62,7 +62,7 @@ const typeDefs = gql`
     login(email: String!, password: String!): AuthPayload
 	  updateUser(id: ID!, username: String, email: String, name: String, birthday: Date, profile: userProfile): User!
 	  deleteUser(id: ID!): Boolean!
-	  createVideo(description: String!, userId: ID!, videoUrl: String!): Video!
+	  createVideo(description: String!, userId: ID!, file: Upload!): Boolean!
 	  updateVideo(id: ID!, description: String, likeId: ID, share: Int): Video!
 	  deleteVideo(id: ID!): Boolean!
 	  deleteVideos: Boolean!
