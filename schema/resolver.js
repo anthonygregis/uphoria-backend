@@ -27,7 +27,6 @@ const processUpload = async upload => {
 				const streamLoad = cloudinary.uploader.upload_stream({ resource_type: 'video' },function (error, result) {
 					if (result) {
 						publicId = result.public_id
-						console.log("File Result:", result.public_id)
 						resolve(publicId)
 					} else {
 						reject(error)
@@ -54,7 +53,7 @@ const resolver = {
 				if (!args.privilegedSecret) {
 					args.privilegedSecret = ""
 				}
-				const foundUser = await db.User.findById(id).populate("videos")
+				const foundUser = await db.User.findById(id).populate("videos", { sort: {'createdAt': -1 }})
 				if (args.privilegedSecret !== "antiTikTok") {
 					foundUser.email = "Not Authorized"
 					foundUser.birthday = "Not Authorized"
@@ -75,7 +74,7 @@ const resolver = {
 				if (!args.privilegedSecret) {
 					args.privilegedSecret = ""
 				}
-				const foundUsers = await db.User.find().populate("videos")
+				const foundUsers = await db.User.find().populate("videos", { sort: {'createdAt': -1 }})
 				if (args.privilegedSecret !== "antiTikTok") {
 					await cleanUser()
 				}
@@ -166,11 +165,8 @@ const resolver = {
 			description: "Create a uphoria video",
 			resolve: async (_, {description, userId, file}, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
-				console.log("Received video create mutation")
 
 				const videoUrl = await processUpload(file)
-
-				console.log("Much type:", typeof videoUrl)
 
 				const newVideo = await db.Video.create({description: description, userId: userId, videoUrl: videoUrl})
 				const updatedUser = await db.User.findByIdAndUpdate({_id: userId}, {$push: {videos: newVideo._id}}, {"new": true})
