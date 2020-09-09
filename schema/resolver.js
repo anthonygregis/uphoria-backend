@@ -20,6 +20,7 @@ const processUpload = async upload => {
 	)
 
 	let publicId = ""
+	console.log("this is working")
 	const cloudinaryUpload = async ({stream}) => {
 		try {
 			await new Promise((resolve, reject) => {
