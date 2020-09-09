@@ -30,7 +30,7 @@ const typeDefs = gql`
     id: ID!
 	  videoUrl: String!
     description: String!
-    userId: ID!
+    userId: User!
     likes: [ID!]!
     shares: Int!
 	  createdAt: Date!
