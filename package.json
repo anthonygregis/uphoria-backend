@@ -18,6 +18,7 @@
     "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.3",
+    "promises-all": "^1.0.0",
     "streamifier": "^0.1.1"
   }
 }
