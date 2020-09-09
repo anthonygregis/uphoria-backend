@@ -178,14 +178,14 @@ const resolver = {
 		},
 		updateVideo: {
 			description: "Update a uphoria video",
-			resolve: async (_, {id, likeId, share, ...setArgs}, context) => {
+			resolve: async (_, {id, isLiking, isSharing, ...setArgs}, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
 				let updateField = {$set: {...setArgs}}
-				if (likeId) {
-					updateField.$push = {likes: likeId}
+				if (isLiking) {
+					updateField.$push = {likes: context.user._id}
 				}
-				if (share) {
-					updateField.$inc = {shares: share}
+				if (isSharing) {
+					updateField.$inc = {shares: 1}
 				}
 				return await db.Video.findByIdAndUpdate({_id: id}, {...updateField}, {"new": true})
 			}
