@@ -90,7 +90,7 @@ const resolver = {
 		videos: {
 			description: "Returns all videos",
 			resolve: async (_, args, context) => {
-				return await db.Video.find()
+				return await db.Video.find().populate('userId').sort([["createdAt", -1]])
 			}
 		}
 	},
