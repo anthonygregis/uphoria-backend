@@ -182,7 +182,7 @@ const resolver = {
 				if (!context.user) throw new Error("Protected Route, please login")
 				let updateField = {$set: {...setArgs}}
 				if (isLiking) {
-					updateField.$push = {likes: context.user._id}
+					updateField.$addToSet = {likes: context.user._id}
 				}
 				if (isSharing) {
 					updateField.$inc = {shares: 1}
