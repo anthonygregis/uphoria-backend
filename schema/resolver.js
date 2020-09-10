@@ -20,6 +20,7 @@ const processUpload = async upload => {
 	)
 
 	let publicId = ""
+	console.log("this is working")
 	const cloudinaryUpload = async ({stream}) => {
 		try {
 			await new Promise((resolve, reject) => {
@@ -139,7 +140,7 @@ const resolver = {
 			description: "Update a user",
 			resolve: async (_, args, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
-				if (context.user.id !== args.id) throw new Error("You are not authorized to update another user")
+				if (context.user._id !== args.id) throw new Error("You are not authorized to update another user")
 				const {id, ...setArgs} = args
 				return await db.User.findByIdAndUpdate({_id: id}, {$set: {...setArgs}}, {"new": true})
 			}
@@ -148,7 +149,7 @@ const resolver = {
 			description: "We aren't Tik Tok",
 			resolve: async (_, {id}, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
-				if (context.user.id !== args.id) throw new Error("You are not authorized to delete another user")
+				if (context.user._id !== args.id) throw new Error("You are not authorized to delete another user")
 				await new Promise((resolve, reject) => {
 					db.User.findByIdAndDelete(id, (err, docs) => {
 						if (err) reject(err)
