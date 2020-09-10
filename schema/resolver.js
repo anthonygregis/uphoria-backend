@@ -1,12 +1,12 @@
-// require("dotenv").config()
+require("dotenv").config()
 const db = require("../models")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const cloudinary = require("cloudinary").v2
-const APP_SECRET = "secretr"
-const CLOUD_CLOUD="agregis"
-const CLOUD_KEY="642173389165988"
-const CLOUD_SECRET="CXEwidw1kUyP2diHR1kSEEyqQgY"
+const APP_SECRET = process.env.APP_SECRET
+const CLOUD_NAME = process.env.CLOUDINARY_CLOUD
+const CLOUD_KEY = process.env.CLOUDINARY_KEY
+const CLOUD_SECRET = process.env.CLOUDINARY_SECRET
 
 const processUpload = async upload => {
 	const {stream} = await upload

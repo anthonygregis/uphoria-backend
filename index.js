@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 const typeDefs = require("./schema/typeDef")
 const resolvers = require("./schema/resolver")
 const express = require("express")
-const APP_SECRET = "secretr"
+const APP_SECRET = process.env.APP_SECRET
 
 const app = express()
 

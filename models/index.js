@@ -1,5 +1,5 @@
-// require("dotenv").config()
-const MONGO_URI = "mongodb://localhost/uphoria"
+require("dotenv").config()
+const MONGO_URI = process.env.MONGO_URI
 const mongoose = require("mongoose")
 
 mongoose.connect(MONGO_URI, {
