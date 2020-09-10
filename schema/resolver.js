@@ -148,6 +148,7 @@ const resolver = {
 		deleteUser: {
 			description: "We aren't Tik Tok",
 			resolve: async (_, {id}, context) => {
+				console.log(context.user)
 				if (!context.user) throw new Error("Protected Route, please login")
 				if (context.user._id !== id) throw new Error("You are not authorized to delete another user")
 				await new Promise((resolve, reject) => {
