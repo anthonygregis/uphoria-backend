@@ -180,11 +180,14 @@ const resolver = {
 		},
 		updateVideo: {
 			description: "Update a uphoria video",
-			resolve: async (_, {id, isLiking, isSharing, ...setArgs}, context) => {
+			resolve: async (_, {id, isLiking, isSharing, isUnliking, ...setArgs}, context) => {
 				if (!context.user) throw new Error("Protected Route, please login")
 				let updateField = {$set: {...setArgs}}
 				if (isLiking) {
 					updateField.$addToSet = {likes: context.user._id}
+				}
+				if (isUnliking) {
+					updateField.$pull = {likes: context.user._id}
 				}
 				if (isSharing) {
 					updateField.$inc = {shares: 1}
