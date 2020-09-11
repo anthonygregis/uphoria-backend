@@ -32,13 +32,11 @@ const server = new ApolloServer({
 
     // add the user to the context
     return {user}
-  },
-  introspection: true,
-  playground: true,
+  }
 })
 
 server.applyMiddleware({app})
 
-app.listen({port: 4000}, () => {
-  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+app.listen({port: process.env.PORT || 8000}, () => {
+  console.log(`Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
 })
