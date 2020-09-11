@@ -32,9 +32,7 @@ const server = new ApolloServer({
 
     // add the user to the context
     return {user}
-  },
-  introspection: true,
-  playground: true,
+  }
 })
 
 server.applyMiddleware({app})
